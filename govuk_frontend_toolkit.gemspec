@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
   # We need to include the files from the submodules, example from:
   # http://somethingaboutcode.wordpress.com/2012/09/27/include-files-from-git-submodules-when-building-a-ruby-gem/
 
+  gemroot_path = `pwd`.strip
   # get an array of submodule dirs by executing 'pwd' inside each submodule
   `git submodule --quiet foreach pwd`.split($\).each do |submodule_path|
     # for each submodule, change working directory to that submodule
@@ -38,7 +39,7 @@ Gem::Specification.new do |s|
       # remove leading path parts to get paths relative to the gem's root dir
       # (this assumes, that the gemspec resides in the gem's root dir)
       submodule_files_paths = submodule_files_fullpaths.map do |filename|
-        filename.gsub "#{File.dirname(__FILE__)}/", ""
+        filename.gsub "#{gemroot_path}/", ""
       end
 
       # add relative paths to gem.files
