@@ -42,7 +42,7 @@ Gem::Specification.new do |s|
       end
 
       # add relative paths to gem.files
-      gem.files += submodule_files_paths
+      s.files += submodule_files_paths
     end
   end
 end
