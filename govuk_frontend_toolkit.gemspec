@@ -9,6 +9,7 @@ Gem::Specification.new do |s|
   s.authors      = ['Bradley Wright']
   s.email        = 'bradley.wright@digital.cabinet-office.gov.uk'
   s.homepage     = 'https://github.com/alphagov/govuk_frontend_toolkit'
+  s.license      = 'MIT'
 
   s.add_dependency "rails", ">= 3.1.0"
   s.add_dependency "sass", ">= 3.2.0"
