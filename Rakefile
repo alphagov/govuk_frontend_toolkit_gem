@@ -5,7 +5,7 @@ require "rake"
 
 require "gem_publisher"
 task :publish_gem do |t|
-  gem = GemPublisher.publish_if_updated("govuk_frontend_toolkit.gemspec", :gemfury, :as => 'govuk')
+  gem = GemPublisher.publish_if_updated("govuk_frontend_toolkit.gemspec")
   puts "Published #{gem}" if gem
 end
 
