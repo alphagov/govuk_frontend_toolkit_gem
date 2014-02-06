@@ -6,7 +6,9 @@ A gem wrapper around the [govuk_frontend_toolkit](http://github.com/alphagov/gov
 
 Just include `govuk_frontend_toolkit` in your `Gemfile`. It
 automatically attaches itself to your asset path so the static/SCSS
-files will be available to the asset pipeline.
+files will be available to the asset pipeline. If you are installing from git, ensure you enable submodules like so:
+
+    gem 'govuk_frontend_toolkit', :git => "https://github.com/alphagov/govuk_frontend_toolkit_gem.git", :submodules => true
 
 You will need to check that the gem is included while in development. Often
 asset related gems are in a bundler group called `assets`. Old Rails projects
