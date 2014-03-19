@@ -1,3 +1,3 @@
 module GovUKFrontendToolkit
-  VERSION = "0.43.2"
+  VERSION = "0.44.0"
 end
