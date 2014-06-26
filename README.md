@@ -49,6 +49,19 @@ conditionals and typography mixins you should add:
     @import '_conditionals';
     @import '_typography';
 
+## Updating the version of the toolkit that's included with the gem
+
+1. Find the commit of [the toolkit][govuk_frontend_toolkit] you want to update to. In this
+   repository, `cd app/assets` and then run `git checkout <NEW TOOLKIT COMMIT>` to change
+   the git submodule
+2. Update the version number in `lib/govuk_frontend_toolkit/version.rb`
+3. Commit those two changes together and push them.
+
+Do not create a version tag in this repository - that's handled automatically by the
+job that publishes the gem to RubyGems.
+
 ## Licence
 
 Released under the MIT Licence, a copy of which can be found in the file `LICENCE`.
+
+[govuk_frontend_toolkit]: https://github.com/alphagov/govuk_frontend_toolkit
