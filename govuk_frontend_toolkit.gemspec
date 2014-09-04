@@ -4,7 +4,7 @@ require "govuk_frontend_toolkit/version"
 
 Gem::Specification.new do |s|
   s.name         = "govuk_frontend_toolkit"
-  s.version      = GovUKFrontendToolkit::VERSION
+  s.version      = GovUKFrontendToolkit.toolkit_version
   s.summary      = 'Tools for building frontend applications'
   s.authors      = ['Bradley Wright']
   s.email        = 'bradley.wright@digital.cabinet-office.gov.uk'
