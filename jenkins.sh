@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
-git submodule init
-git submodule update
+git submodule update --init
+git submodule foreach git pull origin master
 rm -f Gemfile.lock
 bundle install --path "${HOME}/bundles/${JOB_NAME}"
 bundle exec rake
