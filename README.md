@@ -51,14 +51,8 @@ conditionals and typography mixins you should add:
 
 ## Updating the version of the toolkit that's included with the gem
 
-1. Find the commit of [the toolkit][govuk_frontend_toolkit] you want to update to. In this
-   repository, `cd app/assets` and then run `git checkout <NEW TOOLKIT COMMIT>` to change
-   the git submodule
-2. Update the version number in `lib/govuk_frontend_toolkit/version.rb`
-3. Commit those two changes together and push them.
-
-Do not create a version tag in this repository - that's handled automatically by the
-job that publishes the gem to RubyGems.
+You shouldn't need to touch this repository. New versions are published automatically
+based on the `VERSION.txt` in [the frontend toolkit repo][govuk_frontend_toolkit].
 
 ## Licence
 
