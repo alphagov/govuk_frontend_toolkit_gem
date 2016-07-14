@@ -6,8 +6,8 @@ Gem::Specification.new do |s|
   s.name         = "govuk_frontend_toolkit"
   s.version      = GovUKFrontendToolkit.toolkit_version
   s.summary      = 'Tools for building frontend applications'
-  s.authors      = ['Bradley Wright']
-  s.email        = 'bradley.wright@digital.cabinet-office.gov.uk'
+  s.authors      = ["Government Digital Service"]
+  s.email        = ["govuk-dev@digital.cabinet-office.gov.uk"]
   s.homepage     = 'https://github.com/alphagov/govuk_frontend_toolkit'
   s.license      = 'MIT'
 
