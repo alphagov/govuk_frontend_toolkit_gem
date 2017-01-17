@@ -13,7 +13,6 @@ Gem::Specification.new do |s|
 
   s.add_dependency "rails", ">= 3.1.0"
   s.add_dependency "sass", ">= 3.2.0"
-  s.add_development_dependency "gem_publisher", "1.3.1"
   s.add_development_dependency "rake", "0.9.2.2"
 
   s.require_paths = ["lib", "app"]
