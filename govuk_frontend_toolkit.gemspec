@@ -16,33 +16,19 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rake", "0.9.2.2"
 
   s.require_paths = ["lib", "app"]
-  s.files         = `git ls-files`.split($\)
+  s.files         = `git ls-files`.split("\n")
 
-  # We need to include the files from the submodules, example from:
-  # http://somethingaboutcode.wordpress.com/2012/09/27/include-files-from-git-submodules-when-building-a-ruby-gem/
+  `git submodule init`
+  `git submodule update`
 
-  gemroot_path = `pwd`.strip
-  # get an array of submodule dirs by executing 'pwd' inside each submodule
-  `git submodule --quiet foreach pwd`.split($\).each do |submodule_path|
-    # for each submodule, change working directory to that submodule
+  `git submodule foreach`.split("\n").each do |line|
+    submodule_path = line.split[1].gsub('\'', '')
+
     Dir.chdir(submodule_path) do
-
-      # issue git ls-files in submodule's directory
-      submodule_files = `git ls-files`.split($\)
-
-      # prepend the submodule path to create absolute file paths
-      submodule_files_fullpaths = submodule_files.map do |filename|
-        "#{submodule_path}/#{filename}"
+      unwanted = ["jenkins.sh"]
+      (`git ls-files`.split("\n") - unwanted).each do |submodule_file|
+        s.files << "#{submodule_path}/#{submodule_file}"
       end
-
-      # remove leading path parts to get paths relative to the gem's root dir
-      # (this assumes, that the gemspec resides in the gem's root dir)
-      submodule_files_paths = submodule_files_fullpaths.map do |filename|
-        filename.gsub "#{gemroot_path}/", ""
-      end
-
-      # add relative paths to gem.files
-      s.files += submodule_files_paths
     end
   end
 end
