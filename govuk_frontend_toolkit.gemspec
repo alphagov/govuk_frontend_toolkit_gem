@@ -11,7 +11,8 @@ Gem::Specification.new do |s|
   s.homepage     = 'https://github.com/alphagov/govuk_frontend_toolkit'
   s.license      = 'MIT'
 
-  s.add_dependency "rails", ">= 3.1.0"
+  s.add_dependency "railties", ">= 3.1.0"
+
   s.add_dependency "sass", ">= 3.2.0"
   s.add_development_dependency "rake", "0.9.2.2"
 
