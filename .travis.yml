@@ -4,7 +4,7 @@ branches:
   only:
     - master
 before_install:
-  - openssl aes-256-cbc -K $encrypted_839034082a06_key -iv $encrypted_839034082a06_iv -in .travis/govuk_frontend_toolkit_gem_push.enc -out ~/.ssh/id_rsa -d
+  - openssl aes-256-cbc -K $encrypted_1c9807165ece_key -iv $encrypted_1c9807165ece_iv -in .travis/govuk_frontend_toolkit_gem_push.enc -out ~/.ssh/id_rsa -d
   - chmod 600 ~/.ssh/id_rsa
   - git config --global user.name "GOV.UK Design System CI"
   - git config --global user.email "design-system-pipeline@digital.cabinet-office.gov.uk"
