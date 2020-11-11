@@ -18,9 +18,8 @@ git submodule foreach git pull origin master
 # The version of the toolkit defined in the submodules master branch
 NEW_SUBMODULE_VERSION=`cat app/assets/VERSION.txt`
 
-# Install gem dependencies and run tests
+# Check we can install gem dependencies
 bundle install
-bundle exec rake
 
 # If the submodule has a new version string
 if [ "$PINNED_SUBMODULE_VERSION" != "$NEW_SUBMODULE_VERSION" ]; then
