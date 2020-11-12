@@ -1,0 +1,18 @@
+sudo: false
+language: node_js
+node_js:
+  - "6.9.5"
+before_install:
+  # Node project, so Ruby dependencies must be installed manually (see `govuk-lint`)
+  - bundle install
+before_deploy:
+  - test $TRAVIS_TEST_RESULT = 0
+deploy:
+  - provider: script
+    script: './create-release.sh'
+    on:
+      branch: master
+  - provider: script
+    script: './trigger.sh'
+    on:
+      branch: master

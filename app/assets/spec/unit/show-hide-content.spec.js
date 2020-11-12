@@ -1,0 +1,363 @@
+/* global describe it expect beforeEach afterEach jasmine */
+
+var $ = window.jQuery
+
+describe('show-hide-content', function () {
+  'use strict'
+  var GOVUK = window.GOVUK
+
+  afterEach(function () {
+    if (this.showHideContent) {
+      this.showHideContent.destroy()
+    }
+
+    this.$content.remove()
+  })
+
+  describe('when the radios are inside a form', function () {
+    beforeEach(function () {
+      // Sample markup
+      this.$content = $(
+
+        // Radio buttons (yes/no)
+        '<form>' +
+        '<div class="multiple-choice" data-target="show-hide-radios">' +
+        '<input type="radio" name="single" value="yes">' +
+        '<label>Yes</label>' +
+        '</div>' +
+        '<div class="multiple-choice">' +
+        '<input type="radio" name="single" value="no">' +
+        '<label>No</label>' +
+        '</div>' +
+        '<div id="show-hide-radios" class="panel js-hidden" />' +
+        '</form>' +
+
+        '<form>' +
+        '<div class="multiple-choice" data-target="show-hide-radios--name-with-characters-to-escape">' +
+        '<input type="radio" name="test.single[option1=\'value1\'][option2=\'value2\']" value="yes">' +
+        '<label>Yes</label>' +
+        '</div>' +
+        '<div class="multiple-choice">' +
+        '<input type="radio" name="test.single[option1=\'value1\'][option2=\'value2\']" value="no">' +
+        '<label>No</label>' +
+        '</div>' +
+        '<div id="show-hide-radios--name-with-characters-to-escape" class="panel js-hidden" />' +
+        '</form>' +
+
+        // Checkboxes (multiple values)
+        '<form>' +
+        '<div class="multiple-choice" data-target="show-hide-checkboxes">' +
+        '<input type="checkbox" name="multiple[option1]">' +
+        '<label>Option 1</label>' +
+        '</div>' +
+        '<div class="multiple-choice">' +
+        '<input type="checkbox" name="multiple[option2]">' +
+        '<label>Option 2</label>' +
+        '</div>' +
+        '<div class="multiple-choice">' +
+        '<input type="checkbox" name="multiple[option3]">' +
+        '<label>Option 3</label>' +
+        '</div>' +
+        '<div id="show-hide-checkboxes" class="panel js-hidden" />' +
+        '</form>'
+      )
+
+      // Find radios/checkboxes
+      var $radios = this.$content.find('input[type=radio]')
+      var $checkboxes = this.$content.find('input[type=checkbox]')
+
+      // Two radios
+      this.$radio1 = $radios.eq(0)
+      this.$radio2 = $radios.eq(1)
+
+      // Two more radios, with name attributes that include periods
+      this.$radio3 = $radios.eq(2)
+      this.$radio4 = $radios.eq(3)
+
+      // Three checkboxes
+      this.$checkbox1 = $checkboxes.eq(0)
+      this.$checkbox2 = $checkboxes.eq(1)
+      this.$checkbox3 = $checkboxes.eq(2)
+
+      // Add to page
+      $(document.body).append(this.$content)
+
+      // Show/Hide content
+      this.$radioShowHide = $('#show-hide-radios')
+      this.$radioShowHide_nameWithCharactersToEscape = $('#show-hide-radios--name-with-characters-to-escape')
+      this.$checkboxShowHide = $('#show-hide-checkboxes')
+
+      // Add show/hide content support
+      this.showHideContent = new GOVUK.ShowHideContent()
+      this.showHideContent.init()
+    })
+
+    describe('and when this.showHideContent = new GOVUK.ShowHideContent() is called', function () {
+      it('should add the aria attributes to inputs with show/hide content', function () {
+        expect(this.$radio1.attr('aria-expanded')).toBe('false')
+        expect(this.$radio1.attr('aria-controls')).toBe('show-hide-radios')
+
+        expect(this.$radio3.attr('aria-expanded')).toBe('false')
+        expect(this.$radio3.attr('aria-controls')).toBe('show-hide-radios--name-with-characters-to-escape')
+      })
+
+      it('should add the aria attributes to show/hide content', function () {
+        expect(this.$radioShowHide.attr('aria-hidden')).toBe('true')
+        expect(this.$radioShowHide.hasClass('js-hidden')).toEqual(true)
+
+        expect(this.$radioShowHide_nameWithCharactersToEscape.attr('aria-hidden')).toBe('true')
+        expect(this.$radioShowHide_nameWithCharactersToEscape.hasClass('js-hidden')).toEqual(true)
+      })
+
+      it('should hide the show/hide content visually', function () {
+        expect(this.$radioShowHide.hasClass('js-hidden')).toEqual(true)
+        expect(this.$radioShowHide_nameWithCharactersToEscape.hasClass('js-hidden')).toEqual(true)
+      })
+
+      it('should do nothing if no radios are checked', function () {
+        expect(this.$radio1.attr('aria-expanded')).toBe('false')
+        expect(this.$radio2.attr('aria-expanded')).toBe(undefined)
+        expect(this.$radio3.attr('aria-expanded')).toBe('false')
+        expect(this.$radio4.attr('aria-expanded')).toBe(undefined)
+      })
+
+      it('should do nothing if no checkboxes are checked', function () {
+        expect(this.$radio1.attr('aria-expanded')).toBe('false')
+        expect(this.$radio2.attr('aria-expanded')).toBe(undefined)
+        expect(this.$radio3.attr('aria-expanded')).toBe('false')
+        expect(this.$radio4.attr('aria-expanded')).toBe(undefined)
+      })
+
+      describe('with non-default markup', function () {
+        beforeEach(function () {
+          this.showHideContent.destroy()
+        })
+
+        it('should do nothing if a radio without show/hide content is checked', function () {
+          this.$radio2.prop('checked', true)
+          this.$radio4.prop('checked', true)
+
+          // Defaults changed, initialise again
+          this.showHideContent = new GOVUK.ShowHideContent().init()
+          expect(this.$radio1.attr('aria-expanded')).toBe('false')
+          expect(this.$radio3.attr('aria-expanded')).toBe('false')
+
+          expect(this.$radioShowHide.attr('aria-hidden')).toBe('true')
+          expect(this.$radioShowHide_nameWithCharactersToEscape.attr('aria-hidden')).toBe('true')
+
+          expect(this.$radioShowHide.hasClass('js-hidden')).toEqual(true)
+          expect(this.$radioShowHide_nameWithCharactersToEscape.hasClass('js-hidden')).toEqual(true)
+        })
+
+        it('should do nothing if a checkbox without show/hide content is checked', function () {
+          this.$checkbox2.prop('checked', true)
+
+          // Defaults changed, initialise again
+          this.showHideContent = new GOVUK.ShowHideContent().init()
+          expect(this.$checkbox1.attr('aria-expanded')).toBe('false')
+          expect(this.$checkboxShowHide.attr('aria-hidden')).toBe('true')
+          expect(this.$checkboxShowHide.hasClass('js-hidden')).toEqual(true)
+        })
+
+        it('should do nothing if checkboxes without show/hide content is checked', function () {
+          this.$checkbox2.prop('checked', true)
+          this.$checkbox3.prop('checked', true)
+
+          // Defaults changed, initialise again
+          this.showHideContent = new GOVUK.ShowHideContent().init()
+          expect(this.$checkbox1.attr('aria-expanded')).toBe('false')
+          expect(this.$checkboxShowHide.attr('aria-hidden')).toBe('true')
+          expect(this.$checkboxShowHide.hasClass('js-hidden')).toEqual(true)
+        })
+
+        it('should make the show/hide content visible if its radio is checked', function () {
+          this.$radio1.prop('checked', true)
+          this.$radio3.prop('checked', true)
+
+          // Defaults changed, initialise again
+          this.showHideContent = new GOVUK.ShowHideContent().init()
+          expect(this.$radio1.attr('aria-expanded')).toBe('true')
+          expect(this.$radio3.attr('aria-expanded')).toBe('true')
+
+          expect(this.$radioShowHide.attr('aria-hidden')).toBe('false')
+          expect(this.$radioShowHide_nameWithCharactersToEscape.attr('aria-hidden')).toBe('false')
+
+          expect(this.$radioShowHide.hasClass('js-hidden')).toEqual(false)
+          expect(this.$radioShowHide_nameWithCharactersToEscape.hasClass('js-hidden')).toEqual(false)
+        })
+
+        it('should make the show/hide content visible if its checkbox is checked', function () {
+          this.$checkbox1.prop('checked', true)
+
+          // Defaults changed, initialise again
+          this.showHideContent = new GOVUK.ShowHideContent().init()
+          expect(this.$checkbox1.attr('aria-expanded')).toBe('true')
+          expect(this.$checkboxShowHide.attr('aria-hidden')).toBe('false')
+          expect(this.$checkboxShowHide.hasClass('js-hidden')).toEqual(false)
+        })
+      })
+
+      describe('and a show/hide radio receives a click', function () {
+        it('should make the show/hide content visible', function () {
+          this.$radio1.click()
+          this.$radio3.click()
+          expect(this.$radioShowHide.hasClass('js-hidden')).toEqual(false)
+          expect(this.$radioShowHide_nameWithCharactersToEscape.hasClass('js-hidden')).toEqual(false)
+        })
+
+        it('should add the aria attributes to show/hide content', function () {
+          this.$radio1.click()
+          this.$radio3.click()
+
+          expect(this.$radio1.attr('aria-expanded')).toBe('true')
+          expect(this.$radio3.attr('aria-expanded')).toBe('true')
+
+          expect(this.$radioShowHide.attr('aria-hidden')).toBe('false')
+          expect(this.$radioShowHide_nameWithCharactersToEscape.attr('aria-hidden')).toBe('false')
+
+          expect(this.$radioShowHide.hasClass('js-hidden')).toEqual(false)
+          expect(this.$radioShowHide_nameWithCharactersToEscape.hasClass('js-hidden')).toEqual(false)
+        })
+      })
+
+      describe('and a show/hide checkbox receives a click', function () {
+        it('should make the show/hide content visible', function () {
+          this.$checkbox1.click()
+          expect(this.$checkboxShowHide.hasClass('js-hidden')).toEqual(false)
+        })
+
+        it('should add the aria attributes to show/hide content', function () {
+          this.$checkbox1.click()
+          expect(this.$checkbox1.attr('aria-expanded')).toBe('true')
+          expect(this.$checkboxShowHide.attr('aria-hidden')).toBe('false')
+          expect(this.$checkboxShowHide.hasClass('js-hidden')).toEqual(false)
+        })
+      })
+
+      describe('and a show/hide radio receives a click, but another group radio is clicked afterwards', function () {
+        it('should make the show/hide content hidden', function () {
+          this.$radio1.click()
+          this.$radio2.click()
+          expect(this.$radioShowHide.hasClass('js-hidden')).toEqual(true)
+        })
+
+        it('should add the aria attributes to show/hide content', function () {
+          this.$radio1.click()
+          this.$radio2.click()
+          expect(this.$radio1.attr('aria-expanded')).toBe('false')
+          expect(this.$radioShowHide.attr('aria-hidden')).toBe('true')
+        })
+      })
+
+      describe('and a show/hide checkbox receives a click, but another checkbox is clicked afterwards', function () {
+        it('should keep the show/hide content visible', function () {
+          this.$checkbox1.click()
+          this.$checkbox2.click()
+          expect(this.$checkboxShowHide.hasClass('js-hidden')).toEqual(false)
+        })
+
+        it('should keep the aria attributes to show/hide content', function () {
+          this.$checkbox1.click()
+          this.$checkbox2.click()
+          expect(this.$checkbox1.attr('aria-expanded')).toBe('true')
+          expect(this.$checkboxShowHide.attr('aria-hidden')).toBe('false')
+        })
+      })
+    })
+
+    describe('before this.showHideContent.destroy() is called', function () {
+      it('document.body should have show/hide event handlers', function () {
+        var events = $._data(document.body, 'events')
+        expect(events && events.click).toContain(jasmine.objectContaining({
+          namespace: 'ShowHideContent',
+          selector: 'input[type="radio"][name="single"]'
+        }))
+        expect(events && events.click).toContain(jasmine.objectContaining({
+          namespace: 'ShowHideContent',
+          selector: 'input[type="radio"][name="test.single[option1=\'value1\'][option2=\'value2\']"]'
+        }))
+        expect(events && events.click).toContain(jasmine.objectContaining({
+          namespace: 'ShowHideContent',
+          selector: '[data-target] > input[type="checkbox"]'
+        }))
+      })
+    })
+
+    describe('and when this.showHideContent.destroy() is called', function () {
+      beforeEach(function () {
+        this.showHideContent.destroy()
+      })
+
+      it('should have no show/hide event handlers', function () {
+        var events = $._data(document.body, 'events')
+        expect(events && events.click).not.toContain(jasmine.objectContaining({
+          namespace: 'ShowHideContent',
+          selector: 'input[type="radio"][name="single"]'
+        }))
+        expect(events && events.click).not.toContain(jasmine.objectContaining({
+          namespace: 'ShowHideContent',
+          selector: 'input[type="radio"][name="test.single[option1=\'value1\'][option2=\'value2\']"]'
+        }))
+        expect(events && events.click).not.toContain(jasmine.objectContaining({
+          namespace: 'ShowHideContent',
+          selector: '[data-target] > input[type="checkbox"]'
+        }))
+      })
+    })
+  })
+
+  describe('when the radios are outside of a form', function () {
+    beforeEach(function () {
+      // Sample markup
+      this.$content = $(
+        // Radio buttons (yes/no)
+        '<div class="multiple-choice" data-target="show-hide-radios">' +
+        '<input type="radio" name="single" value="yes">' +
+        '<label>Yes</label>' +
+        '</div>' +
+        '<div class="multiple-choice">' +
+        '<input type="radio" name="single" value="no">' +
+        '<label>No</label>' +
+        '</div>' +
+        '<div id="show-hide-radios" class="panel js-hidden" />'
+      )
+
+      // Find radios/checkboxes
+      var $radios = this.$content.find('input[type=radio]')
+
+      // Two radios
+      this.$radio1 = $radios.eq(0)
+      this.$radio2 = $radios.eq(1)
+
+      // Add to page
+      $(document.body).append(this.$content)
+
+      // Show/Hide content
+      this.$radioShowHide = $('#show-hide-radios')
+
+      // Add show/hide content support
+      this.showHideContent = new GOVUK.ShowHideContent()
+      this.showHideContent.init()
+    })
+
+    it('should make the show/hide content visible if its radio is checked', function () {
+      this.$radio1.click()
+
+      // Defaults changed, initialise again
+      this.showHideContent = new GOVUK.ShowHideContent().init()
+      expect(this.$radio1.attr('aria-expanded')).toBe('true')
+      expect(this.$radioShowHide.attr('aria-hidden')).toBe('false')
+      expect(this.$radioShowHide.hasClass('js-hidden')).toEqual(false)
+    })
+
+    it('should do nothing if a radio without show/hide content is checked', function () {
+      this.$radio2.click()
+
+      // Defaults changed, initialise again
+      this.showHideContent = new GOVUK.ShowHideContent().init()
+      expect(this.$radio1.attr('aria-expanded')).toBe('false')
+      expect(this.$radioShowHide.attr('aria-hidden')).toBe('true')
+      expect(this.$radioShowHide.hasClass('js-hidden')).toEqual(true)
+    })
+  })
+})
